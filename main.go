@@ -11,7 +11,7 @@ func main() {
 	fileServerPrefix := "/app/"
 	fileServerMux := http.StripPrefix(fileServerPrefix, http.FileServer(http.Dir(".")))
 	mux.Handle(fileServerPrefix, fileServerMux)
-	mux.HandleFunc("GET /healthz", handleReadiness)
+	mux.HandleFunc("/healthz", handleReadiness)
 
 	fmt.Println("Starting server...")
 	server := http.Server{Handler: mux, Addr: ":8080"}
