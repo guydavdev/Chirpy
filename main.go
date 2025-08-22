@@ -31,6 +31,6 @@ func main() {
 
 	server := http.Server{Handler: mux, Addr: ":" + port}
 
-	log.Printf("Serving files from %s on port %s\n", filepathRoot, port)
+	log.Printf("Serving on port %s\n", port)
 	log.Fatal(server.ListenAndServe())
 }
