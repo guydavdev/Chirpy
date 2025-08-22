@@ -11,12 +11,15 @@ type apiConfig struct {
 }
 
 func main() {
-	const filepathRoot = "."
-	const port = "8080"
+	const (
+		filepathRoot     = "."
+		port             = "8080"
+		fileServerPrefix = "/app/"
+	)
+
 	apiConfig := apiConfig{}
 
 	mux := http.NewServeMux()
-	fileServerPrefix := "/app/"
 	fileServerMux := http.StripPrefix(fileServerPrefix, http.FileServer(http.Dir(".")))
 	mux.Handle(fileServerPrefix, apiConfig.middlewareMetricsInc(fileServerMux))
 
