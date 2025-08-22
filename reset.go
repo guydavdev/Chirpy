@@ -8,6 +8,11 @@ func (cfg *apiConfig) handleReset(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if err := cfg.db.DeleteUsers(r.Context()); err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Failed to delete users:", err)
+		return
+	}
+
 	cfg.fileserverHits.Store(0)
 	w.WriteHeader(http.StatusOK)
 }
