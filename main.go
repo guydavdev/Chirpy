@@ -15,6 +15,7 @@ import (
 type apiConfig struct {
 	fileserverHits atomic.Int32
 	db             *database.Queries
+	platform       string
 }
 
 func main() {
@@ -38,7 +39,10 @@ func main() {
 	}
 	defer dbConn.Close()
 
-	apiConfig := apiConfig{db: database.New(dbConn)}
+	apiConfig := apiConfig{
+		db:       database.New(dbConn),
+		platform: os.Getenv("PLATFORM"),
+	}
 
 	mux := http.NewServeMux()
 	fileServerMux := http.StripPrefix(fileServerPrefix, http.FileServer(http.Dir(".")))
