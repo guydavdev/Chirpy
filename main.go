@@ -1,13 +1,20 @@
 package main
 
 import (
+	"database/sql"
 	"log"
 	"net/http"
+	"os"
 	"sync/atomic"
+
+	"github.com/guydavdev/Chirpy/internal/database"
+	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
 )
 
 type apiConfig struct {
 	fileserverHits atomic.Int32
+	db             *database.Queries
 }
 
 func main() {
@@ -17,7 +24,21 @@ func main() {
 		fileServerPrefix = "/app/"
 	)
 
-	apiConfig := apiConfig{}
+	godotenv.Load()
+	dbUrl := os.Getenv("DB_URL")
+	if dbUrl == "" {
+		log.Fatal("DB_URL must be set")
+	}
+	dbConn, err := sql.Open("postgres", dbUrl)
+	if err != nil {
+		log.Fatalf("Error opening database: %s", err)
+	}
+	if err := dbConn.Ping(); err != nil {
+		log.Fatal("Failed to ping database:", err)
+	}
+	defer dbConn.Close()
+
+	apiConfig := apiConfig{db: database.New(dbConn)}
 
 	mux := http.NewServeMux()
 	fileServerMux := http.StripPrefix(fileServerPrefix, http.FileServer(http.Dir(".")))
