@@ -9,15 +9,15 @@ func (cfg *apiConfig) handlerGetChirps(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	chirps := make([]Chirp, len(chirpsData))
-	for i, chirp := range chirpsData {
-		chirps[i] = Chirp{
+	chirps := []Chirp{}
+	for _, chirp := range chirpsData {
+		chirps = append(chirps, Chirp{
 			ID:        chirp.ID,
 			CreatedAt: chirp.CreatedAt,
 			UpdatedAt: chirp.UpdatedAt,
 			Body:      chirp.Body,
 			UserID:    chirp.UserID,
-		}
+		})
 	}
 
 	respondWithJSON(w, http.StatusOK, chirps)
